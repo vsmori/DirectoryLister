@@ -638,7 +638,7 @@ class DirectoryLister {
 
         // Sort the array
         $reverseSort = in_array($this->_directory, $this->_config['reverse_sort']);
-        $sortedArray = $this->_arraySort($directoryArray, $this->_config['list_sort_order'], $reverseSort);
+        $sortedArray = $this->_arraySort($directoryArray, $this->_config['list_sort_order'], $this->_config['list_sort_field'], $reverseSort);
 
         // Return the array
         return $sortedArray;
@@ -651,17 +651,28 @@ class DirectoryLister {
      *
      * @param array $array Array to be sorted
      * @param string $sortMethod Sorting method (acceptable inputs: natsort, natcasesort, etc.)
+     * @param string $sortField Sort field that will be used for sorting (acceptable inputs: name, file_size, mod_time)
      * @param boolen $reverse Reverse the sorted array order if true (default = false)
      * @return array
      * @access protected
      */
-    protected function _arraySort($array, $sortMethod, $reverse = false) {
+    protected function _arraySort($array, $sortMethod, $sortField, $reverse = false) {
         // Create empty arrays
         $sortedArray = array();
         $finalArray  = array();
 
         // Create new array of just the keys and sort it
-        $keys = array_keys($array);
+		switch($sortField) {
+			case 'file_size':
+				$keys = array_map(function($a) { return $a['file_size']; }, array_values($array));		
+				break;
+			case 'mod_time':
+				$keys = array_map(function($a) { return $a['mod_time']; }, array_values($array));
+				break;
+			default:
+				$keys = array_keys($array);
+				break;
+		}
 
         switch ($sortMethod) {
             case 'asort':
@@ -899,7 +910,5 @@ class DirectoryLister {
 
         // Return the relative path
         return $relativePath;
-
     }
-
 }

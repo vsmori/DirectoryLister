@@ -6,12 +6,17 @@ return array(
     'hide_dot_files'            => true,
     'list_folders_first'        => true,
     'list_sort_order'           => 'natcasesort',
+    'list_sort_field'           => 'mod_time', // name, file_size, mod_time
     'theme_name'                => 'bootstrap',
     'external_links_new_window' => true,
-
+	
     // Hidden files
     'hidden_files' => array(
         '.ht*',
+        '*/.ht*',
+        '*.php',
+        'COPYING',
+        'README.md',
         '*/.ht*',
         'resources',
         'resources/*',
