@@ -638,7 +638,7 @@ class DirectoryLister {
 
         // Sort the array
         $reverseSort = in_array($this->_directory, $this->_config['reverse_sort']);
-        $sortedArray = $this->_arraySort($directoryArray, $this->_config['list_sort_order'], $reverseSort);
+        $sortedArray = $this->_arraySort($directoryArray, $this->_config['list_sort_order'], $this->_config['list_sort_field'], $reverseSort);
 
         // Return the array
         return $sortedArray;
@@ -651,17 +651,29 @@ class DirectoryLister {
      *
      * @param array $array Array to be sorted
      * @param string $sortMethod Sorting method (acceptable inputs: natsort, natcasesort, etc.)
+     * @param string $sortField Sort field that will be used for sorting (acceptable inputs: name, file_size, mod_time)
      * @param boolen $reverse Reverse the sorted array order if true (default = false)
      * @return array
      * @access protected
      */
-    protected function _arraySort($array, $sortMethod, $reverse = false) {
+    protected function _arraySort($array, $sortMethod, $sortField, $reverse = false) {
         // Create empty arrays
         $sortedArray = array();
         $finalArray  = array();
-
+		$keys        = array();
+		
         // Create new array of just the keys and sort it
-        $keys = array_keys($array);
+		switch($sortField) {
+			case 'file_size':
+				array_walk($test_array, function(&$a, $b) use($keys) { $keys[] = $a[$b]['file_size'].'|'.$b; });
+				break;
+			case 'mod_time':
+				array_walk($test_array, function(&$a, $b) use($keys) { $keys[] = $a[$b]['mod_time'].'|'.$b; });
+				break;
+			default:
+				$keys = array_keys($array);
+				break;
+		}
 
         switch ($sortMethod) {
             case 'asort':
@@ -686,6 +698,14 @@ class DirectoryLister {
                 shuffle($keys);
                 break;
         }
+
+        // Transform keys back to the reference it will work
+		switch($sortField) {
+			case 'file_size':
+			case 'mod_time':
+				$keys = array_map(function($a) { return explode('|')[1]; });
+				break;
+		}
 
         // Loop through the sorted values and move over the data
         if ($this->_config['list_folders_first']) {
@@ -899,7 +919,5 @@ class DirectoryLister {
 
         // Return the relative path
         return $relativePath;
-
     }
-
 }
