@@ -665,10 +665,10 @@ class DirectoryLister {
         // Create new array of just the keys and sort it
 		switch($sortField) {
 			case 'file_size':
-				array_walk($array, function(&$a, $b) use($keys) { $keys[] = $a[$b]['file_size'].'|'.$b; });
+				array_walk($array, function(&$a, $b) use(&$keys) { $keys[] = $a[$b]['file_size'].'|'.$b; });
 				break;
 			case 'mod_time':
-				array_walk($array, function(&$a, $b) use($keys) { $keys[] = $a[$b]['mod_time'].'|'.$b; });
+				array_walk($array, function(&$a, $b) use(&$keys) { $keys[] = $a[$b]['mod_time'].'|'.$b; });
 				break;
 			default:
 				$keys = array_keys($array);
