@@ -703,7 +703,7 @@ class DirectoryLister {
 		switch($sortField) {
 			case 'file_size':
 			case 'mod_time':
-				$keys = array_map(function($a) { return explode('|')[1]; }, $keys);
+				$keys = array_map(function($a) { return explode('|',$a)[1]; }, $keys);
 				break;
 		}
 
